@@ -10,6 +10,10 @@ from utils.dataset_utils import TestSpecificDataset
 from utils.image_io import save_image_tensor
 
 from net.model import AirNet
+from ptflops import get_model_complexity_info
+
+def get_num_params(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -47,6 +51,14 @@ if __name__ == '__main__':
     net = AirNet(opt).cuda()
     net.eval()
     net.load_state_dict(torch.load(ckpt_path, map_location=torch.device(opt.cuda)))
+
+    num_params = get_num_params(net)
+    print(net)
+    print(f"{num_params/10**6}M Params")
+    macs, params = get_model_complexity_info(net, (3, 1024, 1024), as_strings=True,
+                                            print_per_layer_stat=True, verbose=True)
+    print('Computational complexity: ', macs)
+    print('Number of parameters: ', params)
 
     test_set = TestSpecificDataset(opt)
     testloader = DataLoader(test_set, batch_size=1, pin_memory=True, shuffle=False, num_workers=0)
