@@ -111,7 +111,7 @@ if __name__ == '__main__':
         test_Denoise(net, denoise_set, sigma=50)
     elif opt.mode == 1:
         print('Start testing rain streak removal...')
-        test_Derain_Dehaze(net, derain_set, task="Rain100L")
+        test_Derain_Dehaze(net, derain_set, task="derain")
     elif opt.mode == 2:
         print('Start testing SOTS...')
         test_Derain_Dehaze(net, derain_set, task="SOTS_outdoor")
